@@ -14,6 +14,8 @@
 #include "adjListGen.h"
 #include "adjListOp.h"
 
+#include "../../gem5_study/include/gem5/m5ops.h"
+
 #define MAX_TOKENS 4 
 
 int main (int argc, char *argv[]) {
@@ -101,9 +103,16 @@ int main (int argc, char *argv[]) {
     //---------------------------------------------
 
     //adjListTopoSort(graphT, 10, 1);
-
+#ifdef USEM5
+    m5_checkpoint(0,0);
+    m5_reset_stats(0,0);
+#endif
     adjListBFS(graph, 3, vertexNum);
-    
+
+#ifdef USEM5
+    m5_dump_stats(0,0);
+#endif
+
     adjListMSTPrimQ(graphT, 0, 6, 20) ;
 
     adjListSSSP(graphT, 0, 6, 20) ;

@@ -33,25 +33,29 @@ void adjListBFS(struct Graph* graph, int startVertex , int vertexNum) {
     QueueStatic workQ;
     QueueStaticInit(&workQ, vertexNum);
 
-    graph->visited[startVertex] = 1;
+    for(int i; i<vertexNum; i++) {
+        if (graph->visited[i] == 0) {
+            graph->visited[i] = 1;
 
-    QueueStaticPush(&workQ, startVertex);
+            QueueStaticPush(&workQ, startVertex);
 
-    while (!QueueStaticEmpty(&workQ)) {
-        int currentVertex = QueueStaticFront(&workQ);
-        QueueStaticPop(&workQ);
-        //printf("Visited %d\n", currentVertex);
+            while (!QueueStaticEmpty(&workQ)) {
+                int currentVertex = QueueStaticFront(&workQ);
+                QueueStaticPop(&workQ);
+                //printf("Visited %d\n", currentVertex);
 
-        struct node* tmpNode = graph->adjLists[currentVertex];
+                struct node* tmpNode = graph->adjLists[currentVertex];
 
-        while (tmpNode) {
-            int adjVertex = tmpNode->vertex;
+                while (tmpNode) {
+                    int adjVertex = tmpNode->vertex;
 
-            if (graph->visited[adjVertex] == 0) {
-                graph->visited[adjVertex] = 1;
-                QueueStaticPush(&workQ, adjVertex);
+                    if (graph->visited[adjVertex] == 0) {
+                        graph->visited[adjVertex] = 1;
+                        QueueStaticPush(&workQ, adjVertex);
+                    }
+                    tmpNode = tmpNode->next;
+                }
             }
-            tmpNode = tmpNode->next;
         }
     }
 }
