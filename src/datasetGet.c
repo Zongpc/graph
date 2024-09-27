@@ -107,7 +107,7 @@ int main (int argc, char *argv[]) {
     m5_checkpoint(0,0);
     m5_reset_stats(0,0);
 #endif
-    adjListBFS(graph, 3, vertexNum);
+    adjListBFS(graph, vertexNum);
 
 #ifdef USEM5
     m5_dump_stats(0,0);

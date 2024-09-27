@@ -29,7 +29,7 @@ void adjListDFS(struct Graph* graph, int startVertex) {
     }
 }
 
-void adjListBFS(struct Graph* graph, int startVertex , int vertexNum) {
+void adjListBFS(struct Graph* graph, int vertexNum) {
     QueueStatic workQ;
     QueueStaticInit(&workQ, vertexNum);
 
@@ -37,7 +37,7 @@ void adjListBFS(struct Graph* graph, int startVertex , int vertexNum) {
         if (graph->visited[i] == 0) {
             graph->visited[i] = 1;
 
-            QueueStaticPush(&workQ, startVertex);
+            QueueStaticPush(&workQ, i);
 
             while (!QueueStaticEmpty(&workQ)) {
                 int currentVertex = QueueStaticFront(&workQ);

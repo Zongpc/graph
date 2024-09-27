@@ -14,7 +14,7 @@
 
 void adjListDFS(struct Graph* graph, int startVertex) ;
 
-void adjListBFS(struct Graph* graph, int startVertex, int vertexNum) ;
+void adjListBFS(struct Graph* graph, int vertexNum) ;
 
 void adjListTopoSort(struct Graph* graph, int vertexNum, int dirFlag) ;
 
