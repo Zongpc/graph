@@ -9,8 +9,16 @@
  * Copyright (c) 2024 by zongpc.me@outlook.com, All Rights Reserved. 
  */
 #include <stdio.h>
+#include <time.h>
 #include "adjListGen.h"
+#include "queueList.h"
 #include "queueStaticList.h"
+
+void takeNap(int count) {
+    for (int i = 0; i < count; i++) {
+        __asm__ volatile ("nop");
+    }
+}
 
 void adjListDFS(struct Graph* graph, int startVertex) {
     struct node* adjList = graph->adjLists[startVertex];
@@ -33,31 +41,55 @@ void adjListBFS(struct Graph* graph, int vertexNum) {
     QueueStatic workQ;
     QueueStaticInit(&workQ, vertexNum);
 
-    for(int i; i<vertexNum; i++) {
+    int adjVertex;
+    int currentVertex;
+    unsigned int totalVertexCnt = 0;
+    unsigned int treeVertexCnt = 0;
+    unsigned int treeVertexCntMax = 0;
+    unsigned int treeVertexSrc;
+    unsigned int QueryNap = 0;
+    struct node* tmpNode; 
+    
+    for(int i=0; i<vertexNum; i++) {
+        treeVertexCnt = 0; 
         if (graph->visited[i] == 0) {
             graph->visited[i] = 1;
 
             QueueStaticPush(&workQ, i);
+//            QueueStaticPush(&workQ, startVertx);
 
             while (!QueueStaticEmpty(&workQ)) {
-                int currentVertex = QueueStaticFront(&workQ);
+                //takeNap(10);
+                currentVertex = QueueStaticFront(&workQ);
                 QueueStaticPop(&workQ);
                 //printf("Visited %d\n", currentVertex);
 
-                struct node* tmpNode = graph->adjLists[currentVertex];
+                tmpNode = graph->adjLists[currentVertex];
 
                 while (tmpNode) {
-                    int adjVertex = tmpNode->vertex;
-
+                    adjVertex = tmpNode->vertex;
+                    tmpNode = tmpNode->next;
                     if (graph->visited[adjVertex] == 0) {
                         graph->visited[adjVertex] = 1;
                         QueueStaticPush(&workQ, adjVertex);
+                        totalVertexCnt = totalVertexCnt + 1;
+                        treeVertexCnt = treeVertexCnt + 1;
                     }
-                    tmpNode = tmpNode->next;
+                    //QueryNap = QueryNap + takeNap(10);
+                    //takeNap(100);
+                }
+            }
+            if (graph->outDegree[i] != 0) {
+                if(treeVertexCnt > treeVertexCntMax){
+                    treeVertexCntMax = treeVertexCnt;
+                    treeVertexSrc =i;
                 }
             }
         }
     }
+    printf("\n %d vertices are visisted!\n",totalVertexCnt);
+    printf("\n %d vertices on the biggest tree start from %d\n",treeVertexCntMax,treeVertexSrc);
+//    printf("\n %d Qurey Naps are taken!\n",QueryNap);
 }
 
 void adjListTopoSort(struct Graph* graph,  int vertexNum, int dirFlag) {
@@ -90,12 +122,12 @@ void adjListTopoSort(struct Graph* graph,  int vertexNum, int dirFlag) {
         struct node* tmpNode = graph->adjLists[tmpVertex]; 
         while (tmpNode) {
             tmpVertex = tmpNode->vertex;
+            tmpNode = tmpNode->next;
             graph->inDegree[tmpVertex] --; 
             tmpIndegree = graph->inDegree[tmpVertex]; 
             if (tmpIndegree <= 1-dirFlag) {
                 QueueStaticPush(&workQ,tmpVertex);
             }
-            tmpNode = tmpNode->next;
         }
     }
     if (j == vertexNum) {
@@ -143,26 +175,28 @@ void adjListMSTPrim(struct Graph* graph,  int startVertex, int vertexNum, int Ma
         struct node* tmpNode = graph->adjLists[refVertex];
         while (tmpNode) {
             int adjVertex = tmpNode -> vertex;
-            if ((!graph->visited[adjVertex]) &&  tmpNode -> weight < MSTDist[adjVertex]) {
-                MSTDist[adjVertex] = tmpNode -> weight;
+            int adjWeight = tmpNode -> weight;
+            tmpNode = tmpNode -> next;
+            if ((!graph->visited[adjVertex]) &&  adjWeight < MSTDist[adjVertex]) {
+                MSTDist[adjVertex] = adjWeight;
                 MSTNodes[adjVertex] = refVertex;
             }
-            tmpNode = tmpNode -> next;
         }
     }
-    printf("\n Minimum Spanning Tree(MST): ");
+    //printf("\n Minimum Spanning Tree(MST): ");
 	int sumWeight = 0;
     QueueStatic freeQ;
     QueueStaticInit(&freeQ, vertexNum);
 	for (i = 0; i < vertexNum; i++) {
 		if (MSTNodes[i] != -1) {
-			printf("<%d,%d>  ", i,  MSTNodes[i]);
+			//printf("<%d,%d>  ", i,  MSTNodes[i]);
 		    sumWeight += MSTDist[i];
 		}else if (i != startVertex) {
             QueueStaticPush(&freeQ, i);
         }
 	}
     printf("\n Sum of weights on the tree: %d\n" , sumWeight);
+    /*
     if (!QueueStaticEmpty(&freeQ)) {
         printf("\n The vertices not on the tree: {");
         while (!QueueStaticEmpty(&freeQ)) {
@@ -172,7 +206,7 @@ void adjListMSTPrim(struct Graph* graph,  int startVertex, int vertexNum, int Ma
         }
         printf("} \n");
     }
-
+    */
 }
         
 void adjListMSTPrimQ(struct Graph* graph,  int startVertex, int vertexNum, int MaxInt) {
@@ -199,39 +233,42 @@ void adjListMSTPrimQ(struct Graph* graph,  int startVertex, int vertexNum, int M
         struct node* tmpNode = graph->adjLists[refVertex];
         while (tmpNode) {
             int adjVertex = tmpNode -> vertex;
+            int adjWeight = tmpNode -> weight;
+            tmpNode = tmpNode -> next; 
             //if ((!graph->visited[adjVertex]) && tmpNode -> weight < MSTDist[adjVertex]) {
-            if (tmpNode -> weight < MSTDist[adjVertex]) {
-                MSTDist[adjVertex] = tmpNode -> weight;
+            if (adjWeight < MSTDist[adjVertex]) {
+                MSTDist[adjVertex] = adjWeight;
                 MSTNodes[adjVertex] = refVertex; 
                 if (!graph->visited[adjVertex]) {
                     QueueStaticPush(&workQ,adjVertex);
                 }
             }
-            tmpNode = tmpNode -> next; 
         }
     }
-    printf("\n Minimum Spanning Tree(MST): ");
+    //printf("\n Minimum Spanning Tree(MST): ");
 	int sumWeight = 0;
     QueueStatic freeQ;
     QueueStaticInit(&freeQ, vertexNum);
 	for (j = 0; j < vertexNum; j++) {
 		if (MSTNodes[j] != -1) {
-			printf("<%d,%d>  ", j,  MSTNodes[j]);
+			//printf("<%d,%d>  ", j,  MSTNodes[j]);
 		    sumWeight += MSTDist[j];
 		}else if (j != startVertex) {
             QueueStaticPush(&freeQ, j);
         }
 	}
     printf("\n Sum of weights on the tree: %d" , sumWeight);
+    /*
     if (!QueueStaticEmpty(&freeQ)) {
         printf("\n The vertices not on the tree: {");
-        while (!QueueStaticEmpty(&freeQ)) {
-            int freeVertex = QueueStaticFront(&freeQ);
-            QueueStaticPop(&freeQ);
-            printf(" %d " , freeVertex);
-        }
+        //while (!QueueStaticEmpty(&freeQ)) {
+        //    int freeVertex = QueueStaticFront(&freeQ);
+        //    QueueStaticPop(&freeQ);
+        //    printf(" %d " , freeVertex);
+        //}
         printf("} \n");
     }
+    */
 }
 
 void adjListSSSP(struct Graph* graph,  int startVertex, int vertexNum, int MaxInt) {
@@ -258,7 +295,9 @@ void adjListSSSP(struct Graph* graph,  int startVertex, int vertexNum, int MaxIn
         struct node* tmpNode = graph->adjLists[refVertex];
         while (tmpNode) {
             int adjVertex = tmpNode -> vertex;
-            int tmpDist = tmpNode -> weight + SSSPDist[refVertex];
+            int adjWeight = tmpNode -> weight;
+            tmpNode = tmpNode -> next; 
+            int tmpDist = adjWeight + SSSPDist[refVertex];
             if (tmpDist < SSSPDist[adjVertex]) {
                 SSSPDist[adjVertex] = tmpDist;
                 SSSPNodes[adjVertex] = refVertex; 
@@ -266,22 +305,22 @@ void adjListSSSP(struct Graph* graph,  int startVertex, int vertexNum, int MaxIn
                     QueueStaticPush(&workQ,adjVertex);
                 }
             }
-            tmpNode = tmpNode -> next; 
         }
     }
-    printf("\n Single Source Shortest Path(SSSP): ");
+    //printf("\n Single Source Shortest Path(SSSP): ");
 	int sumWeight = 0;
     QueueStatic freeQ;
     QueueStaticInit(&freeQ, vertexNum);
 	for (j = 0; j < vertexNum; j++) {
 		if (SSSPNodes[j] != -1) {
-			printf("<%d,%d>  ", j,  SSSPNodes[j]);
+			//printf("<%d,%d>  ", j,  SSSPNodes[j]);
 		    sumWeight += SSSPDist[j];
 		}else if (j != startVertex) {
             QueueStaticPush(&freeQ, j);
         }
 	}
     printf("\n Sum of weights on the tree: %d\n" , sumWeight);
+    /*
     if (!QueueStaticEmpty(&freeQ)) {
         printf("\n The vertices not on the tree: {");
         while (!QueueStaticEmpty(&freeQ)) {
@@ -291,4 +330,5 @@ void adjListSSSP(struct Graph* graph,  int startVertex, int vertexNum, int MaxIn
         }
         printf("} \n");
     }
+    */
 }

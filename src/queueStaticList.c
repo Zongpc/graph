@@ -18,6 +18,7 @@
 
 // 队列的初始化函数  
 void QueueStaticInit(QueueStatic* pq, int max_size) {  
+    uint64_t * ptr;
 //    assert(pq); // 断言确保传入的队列指针不为空，这是一种常见的错误检查机制  
     //dynamic pq->phead = NULL; // 初始化队列的头部指针为NULL，表示队列开始时是空的  
     //dynamic pq->ptail = NULL; // 初始化队列的尾部指针为NULL  
@@ -26,7 +27,7 @@ void QueueStaticInit(QueueStatic* pq, int max_size) {
     pq->ptail = 0; // 初始化队列的尾部指针为0  
     pq->size = 0;     // 初始化队列的大小为0，表示队列中没有元素  
     //-------static list-----end--
-    pq->qlist = malloc(2 * max_size * sizeof(int)); //static list --debug
+    pq->qlist = calloc(2 * max_size,sizeof(ptr)); //static list --debug
 }
 
 // 队列的销毁  
@@ -107,7 +108,7 @@ void QueueStaticPop(QueueStatic* pq) {
 	// assert(pq->phead);  
 
     //printf("phead is %d\n", pq->phead);
-    int x = pq->qlist[pq->phead];
+    //int x = pq->qlist[pq->phead];
   
 	// 检查队列中是否只有一个节点  
 	if (pq->ptail != pq->phead) {  

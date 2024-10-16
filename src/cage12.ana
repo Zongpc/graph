@@ -1,0 +1,66 @@
+vertexNum:130230 
+start read file
+
+*maxSrcID: 130228, maxDstId: 130228.
+*Read time taken: 0.335189 seconds
+数组基本统计量:
+最小值 (Min): 0
+最大值 (Max): 33
+平均值 (Average): 15.61
+中位数 (Median): 15.00
+
+数据频率分布:
+值 0: 2 次
+值 5: 1024 次
+值 7: 2304 次
+值 8: 5440 次
+值 9: 1664 次
+值 10: 5936 次
+值 11: 11600 次
+值 12: 6912 次
+值 13: 9848 次
+值 14: 12344 次
+值 15: 9364 次
+值 16: 11248 次
+值 17: 10609 次
+值 18: 7690 次
+值 19: 8779 次
+值 20: 5932 次
+值 21: 4747 次
+值 22: 4712 次
+值 23: 2297 次
+值 24: 2760 次
+值 25: 1483 次
+值 26: 982 次
+值 27: 1055 次
+值 28: 462 次
+值 29: 544 次
+值 30: 180 次
+值 31: 252 次
+值 32: 12 次
+值 33: 48 次
+
+
+ vertex 0 ,indegree 0, outdegree 4
+: 3 -> 2 -> 4 -> 1 -> 
+
+ vertex 1 ,indegree 1, outdegree 0
+: 
+
+ vertex 2 ,indegree 1, outdegree 1
+: 3 -> 
+
+ vertex 3 ,indegree 3, outdegree 1
+: 5 -> 
+
+ vertex 4 ,indegree 1, outdegree 1
+: 3 -> 
+
+ vertex 5 ,indegree 1, outdegree 0
+: 
+
+ 130227 vertices are visisted!
+
+ 130227 vertices on the biggest tree start from 1
+
+*Time taken: 0.147873 seconds

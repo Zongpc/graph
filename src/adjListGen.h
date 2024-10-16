@@ -14,6 +14,9 @@
 
 #define DIRECT      1
 #define UNDIRECT    0
+#define CACHELINESIZE 64
+
+typedef struct node node;
 
 //----------graph data--------
 struct node{
@@ -26,6 +29,7 @@ struct Graph{
   int numVertices;
   int* visited;
   int* inDegree;
+  int* outDegree;
   struct node** adjLists;
 };
 //----------------------------
@@ -44,6 +48,10 @@ void addEdge(struct Graph* graph, int s, int d ,int w, int dirFlag);
 
 // Print the graph
 void printGraph(struct Graph* graph);
+
+
+// Print the graph adjlist pointer
+void printAdjListPtr(struct Graph* graph) ;
 //------------------------
 
 #endif

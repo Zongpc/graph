@@ -13,13 +13,14 @@
 
 #include<stdio.h>    
 #include<stdlib.h>  
+#include<stdint.h>  
 #include<stdbool.h> 
 #include<assert.h> 
 
 
 //----------queue data----------
 // 定义队列中存储的数据类型为整数  
-typedef int QSDataType;  
+typedef uint64_t QSDataType;  
   
 //// 定义队列节点的结构体  
 //typedef struct QueueNode {  
@@ -32,7 +33,7 @@ typedef struct QueueStatic {
     //dynamic QNode* phead; // 指向队列头部的指针，若队列为空，则此指针为NULL  
     //dynamic QNode* ptail; // 指向队列尾部的指针，若队列为空，则此指针为NULL  
     int size;     // 表示队列中当前元素的数量  
-    int * qlist;  // static list --debug
+    uint64_t* qlist;  // static list --debug
     int phead;  // static list --debug
     int ptail;  // static list --debug
 } QueueStatic;  // Queue是队列的类型别名
